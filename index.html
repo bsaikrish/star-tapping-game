@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Star Click Game</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      overflow: hidden;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    #gameArea {
+      position: relative;
+      width: 100vw;
+      height: 60vh;
+      border: 2px dashed #334155;
+      margin-top: 20px;
+    }
+
+    #star {
+      font-size: 60px;
+      position: absolute;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .info {
+      font-size: 24px;
+      margin-top: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>⭐ Star Click Game</h1>
+
+<div class="info">
+  Score: <span id="score">0</span> |
+  Time: <span id="time">60</span>s
+</div>
+
+<button onclick="startGame()">Start Game</button>
+
+<div id="gameArea">
+  <div id="star">⭐</div>
+</div>
+
+<script>
+let score = 0;
+let time = 60;
+let timer;
+let gameRunning = false;
+
+const star = document.getElementById("star");
+const gameArea = document.getElementById("gameArea");
+const scoreEl = document.getElementById("score");
+const timeEl = document.getElementById("time");
+
+// random star position
+function moveStar() {
+  const maxX = gameArea.clientWidth - 60;
+  const maxY = gameArea.clientHeight - 60;
+
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
+
+  star.style.left = x + "px";
+  star.style.top = y + "px";
+}
+
+// ⭐ correct click
+star.addEventListener("click", function (e) {
+  if (!gameRunning) return;
+
+  e.stopPropagation(); // IMPORTANT: prevent minus score trigger
+
+  score += 10;
+  scoreEl.innerText = score;
+
+  moveStar();
+});
+
+// ❌ miss click anywhere inside game area
+gameArea.addEventListener("click", function () {
+  if (!gameRunning) return;
+
+  score -= 5;
+  scoreEl.innerText = score;
+});
+
+function startGame() {
+  score = 0;
+  time = 60;
+  gameRunning = true;
+
+  scoreEl.innerText = score;
+  timeEl.innerText = time;
+
+  moveStar();
+
+  clearInterval(timer);
+
+  timer = setInterval(() => {
+    time--;
+    timeEl.innerText = time;
+
+    if (time <= 0) {
+      clearInterval(timer);
+      gameRunning = false;
+      alert("Game Over! Your Score: " + score);
+    }
+  }, 1000);
+}
+</script>
+
+</body>
+</html>
